@@ -46,5 +46,5 @@ slug:
   clean_accents: true
   sanitize_replacement: "_"
 
-site_url: "https://your-site.netlify.app"
-display_url: "https://your-site.netlify.app"
+site_url: "https://jamstack-base.netlify.app"
+display_url: "https://jamstack-base.netlify.app"

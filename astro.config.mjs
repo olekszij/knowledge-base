@@ -6,6 +6,6 @@ import robotsTxt from 'astro-robots-txt';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://your-domain.com',
+  site: 'https://jamstack-base.netlify.app',
   integrations: [mdx(), sitemap(), robotsTxt()],
 });
