@@ -1,6 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: olekszij/knowledge-base
   branch: main
+  client_id: Ov23likg3BGJ4XZ69E9u
+  client_secret: be3a86d2ad4da2cb603c6cd07cc9f65648ddde05
 
 media_folder: "public/images"
 public_folder: "/images"
