@@ -1,0 +1,228 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allArticles = (await getCollection('articles')).filter(
+  (article) => !article.data.draft
+);
+
+const allSnippets = (await getCollection('snippets')).filter(
+  (snippet) => !snippet.data.draft
+);
+
+// Sort by date (newest first)
+const sortedArticles = allArticles.sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const sortedSnippets = allSnippets.sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+// Get unique categories
+const categories = [
+  'All',
+  'Astro',
+  'Decap',
+  'Jamstack',
+  'UI',
+  'Other'
+] as const;
+
+type Category = typeof categories[number];
+---
+
+<Layout title="Knowledge Base - Home">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        Development Knowledge Base
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400">
+        Internal tutorials, guides, and code snippets for rapid development
+      </p>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="mb-8">
+      <div class="flex flex-wrap gap-2">
+        {categories.map((category) => (
+          <button
+            data-category={category}
+            class="category-btn px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 font-medium hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-all active"
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Featured Articles -->
+    {sortedArticles.filter(article => article.data.featured).length > 0 && (
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+          Featured Articles
+        </h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sortedArticles
+            .filter(article => article.data.featured)
+            .map((article) => (
+              <article
+                class="featured-card bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
+                data-category={article.data.category}
+              >
+                <div class="p-6">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="px-2 py-1 text-xs font-medium rounded bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                      {article.data.category}
+                    </span>
+                    <time class="text-sm text-gray-500 dark:text-gray-400">
+                      {article.data.date.toLocaleDateString()}
+                    </time>
+                  </div>
+                  <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <a href={`/articles/${article.slug}/`} class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                      {article.data.title}
+                    </a>
+                  </h3>
+                  <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                    {article.data.description}
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    {article.data.tags.map((tag) => (
+                      <span class="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            ))}
+        </div>
+      </section>
+    )}
+
+    <!-- All Articles -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        Articles & Guides
+      </h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sortedArticles
+          .filter(article => !article.data.featured)
+          .map((article) => (
+            <article
+              class="article-card bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
+              data-category={article.data.category}
+            >
+              <div class="p-6">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="px-2 py-1 text-xs font-medium rounded bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                    {article.data.category}
+                  </span>
+                  <time class="text-sm text-gray-500 dark:text-gray-400">
+                    {article.data.date.toLocaleDateString()}
+                  </time>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  <a href={`/articles/${article.slug}/`} class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                    {article.data.title}
+                  </a>
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                  {article.data.description}
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  {article.data.tags.map((tag) => (
+                    <span class="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </article>
+          ))}
+      </div>
+    </section>
+
+    <!-- Code Snippets -->
+    <section>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        Code Snippets
+      </h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sortedSnippets.map((snippet) => (
+          <article
+            class="snippet-card bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
+            data-category={snippet.data.category}
+          >
+            <div class="p-6">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="px-2 py-1 text-xs font-medium rounded bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
+                  {snippet.data.category}
+                </span>
+                <span class="px-2 py-1 text-xs font-medium rounded bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">
+                  {snippet.data.language}
+                </span>
+                <time class="text-sm text-gray-500 dark:text-gray-400">
+                  {snippet.data.date.toLocaleDateString()}
+                </time>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                <a href={`/snippets/${snippet.slug}/`} class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  {snippet.data.title}
+                </a>
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                {snippet.data.description}
+              </p>
+              <div class="flex flex-wrap gap-2">
+                {snippet.data.tags.map((tag) => (
+                  <span class="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const allCards = document.querySelectorAll('.featured-card, .article-card, .snippet-card');
+
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Update active state
+        categoryButtons.forEach(btn => {
+          btn.classList.remove('active', 'bg-blue-600', 'text-white', 'border-blue-600');
+          btn.classList.add('bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-gray-100', 'border-gray-300', 'dark:border-gray-600');
+        });
+        
+        button.classList.remove('bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-gray-100', 'border-gray-300', 'dark:border-gray-600');
+        button.classList.add('active', 'bg-blue-600', 'text-white', 'border-blue-600');
+
+        const category = button.dataset.category;
+
+        // Filter cards
+        allCards.forEach(card => {
+          if (category === 'All' || card.dataset.category === category) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Set initial active state
+    const allButton = document.querySelector('.category-btn[data-category="All"]');
+    if (allButton) {
+      allButton.classList.remove('bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-gray-100', 'border-gray-300', 'dark:border-gray-600');
+      allButton.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+    }
+  </script>
+</Layout>

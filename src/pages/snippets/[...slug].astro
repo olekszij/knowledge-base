@@ -1,0 +1,185 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const snippets = await getCollection('snippets');
+  return snippets.map((snippet) => ({
+    params: { slug: snippet.slug },
+    props: { snippet },
+  }));
+}
+
+type Props = {
+  snippet: CollectionEntry<'snippets'>;
+};
+
+const { snippet } = Astro.props;
+const { Content } = await snippet.render();
+---
+
+<Layout 
+  title={snippet.data.title} 
+  description={snippet.data.description}
+  noindex={snippet.data.draft}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="lg:grid lg:grid-cols-4 lg:gap-8">
+      <!-- Main Content -->
+      <div class="lg:col-span-3">
+        <article class="prose prose-lg dark:prose-invert max-w-none">
+          <!-- Snippet Header -->
+          <header class="mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="px-3 py-1 text-sm font-medium rounded bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
+                {snippet.data.category}
+              </span>
+              <span class="px-3 py-1 text-sm font-medium rounded bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">
+                {snippet.data.language}
+              </span>
+              <time class="text-sm text-gray-500 dark:text-gray-400">
+                {snippet.data.date.toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </time>
+            </div>
+            
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              {snippet.data.title}
+            </h1>
+            
+            <p class="text-xl text-gray-600 dark:text-gray-400 mb-6">
+              {snippet.data.description}
+            </p>
+            
+            <div class="flex flex-wrap gap-2">
+              {snippet.data.tags.map((tag) => (
+                <span class="px-3 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </header>
+
+          <!-- Snippet Content -->
+          <div class="snippet-content">
+            <Content />
+          </div>
+        </article>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="hidden lg:block lg:col-span-1">
+        <div class="sticky top-24">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Snippet Info
+            </h3>
+            
+            <div class="space-y-3">
+              <div>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Language:</span>
+                <p class="text-sm font-medium text-gray-900 dark:text-white">
+                  {snippet.data.language}
+                </p>
+              </div>
+              
+              <div>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Category:</span>
+                <p class="text-sm font-medium text-gray-900 dark:text-white">
+                  {snippet.data.category}
+                </p>
+              </div>
+              
+              <div>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Tags:</span>
+                <div class="flex flex-wrap gap-1 mt-1">
+                  {snippet.data.tags.map((tag) => (
+                    <span class="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Related Snippets -->
+          <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              More Snippets
+            </h3>
+            <a href="/" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+              Browse all snippets →
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .prose {
+    @apply text-gray-900 dark:text-gray-100;
+  }
+  
+  .prose h2 {
+    @apply text-2xl font-bold mt-8 mb-4 text-gray-900 dark:text-white;
+  }
+  
+  .prose h3 {
+    @apply text-xl font-semibold mt-6 mb-3 text-gray-900 dark:text-white;
+  }
+  
+  .prose p {
+    @apply mb-4 leading-relaxed;
+  }
+  
+  .prose a {
+    @apply text-blue-600 dark:text-blue-400 hover:underline;
+  }
+  
+  .prose code {
+    @apply bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-sm;
+  }
+  
+  .prose pre {
+    @apply bg-gray-900 dark:bg-gray-950 rounded-lg p-4 overflow-x-auto mb-4;
+  }
+  
+  .prose pre code {
+    @apply bg-transparent p-0 text-gray-100;
+  }
+  
+  .prose ul, .prose ol {
+    @apply mb-4 ml-6;
+  }
+  
+  .prose li {
+    @apply mb-2;
+  }
+  
+  .prose blockquote {
+    @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-700 dark:text-gray-300 mb-4;
+  }
+  
+  .prose img {
+    @apply rounded-lg shadow-sm my-6;
+  }
+  
+  .prose table {
+    @apply w-full border-collapse mb-4;
+  }
+  
+  .prose th, .prose td {
+    @apply border border-gray-200 dark:border-gray-700 px-4 py-2 text-left;
+  }
+  
+  .prose th {
+    @apply bg-gray-100 dark:bg-gray-700 font-semibold;
+  }
+</style>
