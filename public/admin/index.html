@@ -16,7 +16,14 @@
 <body>
   <!-- Decap CMS will be mounted here -->
   <script>
-    window.CMS.init();
+    // Wait for CMS to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.CMS) {
+        window.CMS.init();
+      } else {
+        console.error('Decap CMS failed to load');
+      }
+    });
   </script>
 </body>
 </html>
