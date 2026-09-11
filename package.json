@@ -16,7 +16,8 @@
     "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.2",
     "astro-robots-txt": "^1.0.0",
-    "decap-cms": "^3.16.2"
+    "decap-cms": "^3.16.2",
+    "decap-cms-app": "^3.16.2"
   },
   "allowScripts": {
     "esbuild": true
