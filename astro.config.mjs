@@ -1,6 +1,5 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import robotsTxt from 'astro-robots-txt';
@@ -9,7 +8,4 @@ import robotsTxt from 'astro-robots-txt';
 export default defineConfig({
   site: 'https://your-domain.com',
   integrations: [mdx(), sitemap(), robotsTxt()],
-  vite: {
-    plugins: [tailwindcss()]
-  }
 });
