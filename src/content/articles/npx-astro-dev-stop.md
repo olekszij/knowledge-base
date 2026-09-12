@@ -1,5 +1,6 @@
 ---
 title: npx astro dev stop
+description: "How to stop and restart the Astro dev server"
 date: 2026-09-12
 category: Astro
 tags:
