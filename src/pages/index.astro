@@ -23,7 +23,7 @@ const sortedSnippets = allSnippets.sort(
 const categories = [
   'All',
   'Astro',
-  'Decap',
+  'Keystatic',
   'Jamstack',
   'UI',
   'Other'
@@ -33,23 +33,30 @@ type Category = typeof categories[number];
 ---
 
 <Layout title="Knowledge Base - Home">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="mb-12">
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+  <!-- Decorative Background Glow -->
+  <div class="absolute inset-x-0 top-0 -z-10 h-[500px] overflow-hidden pointer-events-none">
+    <div class="absolute left-1/2 top-0 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-blue-500/20 to-transparent blur-3xl rounded-full opacity-50 dark:opacity-20"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 lg:py-24 relative">
+    
+    <!-- Hero Section -->
+    <div class="mb-12 md:mb-20 text-center max-w-4xl mx-auto px-2">
+      <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-gray-900 to-gray-500 dark:from-white dark:to-gray-400 mb-6 md:mb-8 drop-shadow-sm leading-tight">
         Development Knowledge Base
       </h1>
-      <p class="text-lg text-gray-600 dark:text-gray-400">
+      <p class="text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-400 font-medium max-w-2xl mx-auto leading-relaxed">
         Internal tutorials, guides, and code snippets for rapid development
       </p>
     </div>
 
-    <!-- Category Filter -->
-    <div class="mb-8">
-      <div class="flex flex-wrap gap-2">
+    <!-- Category Filter (Pill design) -->
+    <div class="mb-12 md:mb-16 flex justify-center px-2">
+      <div class="inline-flex flex-wrap justify-center gap-2 p-1.5 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-800/50">
         {categories.map((category) => (
           <button
             data-category={category}
-            class="category-btn px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 font-medium hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-all active"
+            class="category-btn px-4 sm:px-6 py-2.5 rounded-xl text-sm sm:text-base font-medium transition-all duration-300 ease-out text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-95"
           >
             {category}
           </button>
@@ -59,8 +66,9 @@ type Category = typeof categories[number];
 
     <!-- Featured Articles -->
     {sortedArticles.filter(article => article.data.featured).length > 0 && (
-      <section class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-8 flex items-center gap-2">
+          <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
           Featured Articles
         </h2>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -68,29 +76,39 @@ type Category = typeof categories[number];
             .filter(article => article.data.featured)
             .map((article) => (
               <article
-                class="featured-card bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
+                class="featured-card group relative bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
                 data-category={article.data.category}
               >
-                <div class="p-6">
-                  <div class="flex items-center gap-2 mb-3">
-                    <span class="px-2 py-1 text-xs font-medium rounded bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                {article.data.coverImage?.src && (
+                  <div class="w-full h-48 overflow-hidden rounded-t-2xl border-b border-gray-200/50 dark:border-gray-700/50">
+                    <img 
+                      src={article.data.coverImage.src} 
+                      alt={article.data.coverImage.alt || article.data.title} 
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    />
+                  </div>
+                )}
+                <div class="p-6 relative">
+                  <div class="flex items-center gap-2 mb-4">
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-100/80 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-700/10 dark:ring-indigo-300/20">
                       {article.data.category}
                     </span>
-                    <time class="text-sm text-gray-500 dark:text-gray-400">
+                    <time class="text-sm text-gray-500 dark:text-gray-400 font-medium">
                       {article.data.date.toLocaleDateString()}
                     </time>
                   </div>
-                  <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                    <a href={`/articles/${article.slug}/`} class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                    <a href={`/articles/${article.id}/`} class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors after:absolute after:inset-0">
                       {article.data.title}
                     </a>
                   </h3>
-                  <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                  <p class="text-gray-600 dark:text-gray-400 mb-5 line-clamp-2">
                     {article.data.description}
                   </p>
                   <div class="flex flex-wrap gap-2">
                     {article.data.tags.map((tag) => (
-                      <span class="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                      <span class="px-2.5 py-1 text-xs font-medium rounded-lg bg-gray-100/80 dark:bg-gray-700/80 text-gray-600 dark:text-gray-400">
                         {tag}
                       </span>
                     ))}
@@ -103,8 +121,8 @@ type Category = typeof categories[number];
     )}
 
     <!-- All Articles -->
-    <section class="mb-12">
-      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">
         Articles & Guides
       </h2>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -112,29 +130,39 @@ type Category = typeof categories[number];
           .filter(article => !article.data.featured)
           .map((article) => (
             <article
-              class="article-card bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
+              class="article-card group relative bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
               data-category={article.data.category}
             >
-              <div class="p-6">
-                <div class="flex items-center gap-2 mb-3">
-                  <span class="px-2 py-1 text-xs font-medium rounded bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+              <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              {article.data.coverImage?.src && (
+                <div class="w-full h-40 overflow-hidden rounded-t-2xl border-b border-gray-200/50 dark:border-gray-700/50">
+                  <img 
+                    src={article.data.coverImage.src} 
+                    alt={article.data.coverImage.alt || article.data.title} 
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  />
+                </div>
+              )}
+              <div class="p-6 relative">
+                <div class="flex items-center gap-2 mb-4">
+                  <span class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-100/80 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-700/10 dark:ring-emerald-300/20">
                     {article.data.category}
                   </span>
-                  <time class="text-sm text-gray-500 dark:text-gray-400">
+                  <time class="text-sm text-gray-500 dark:text-gray-400 font-medium">
                     {article.data.date.toLocaleDateString()}
                   </time>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                  <a href={`/articles/${article.slug}/`} class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                  <a href={`/articles/${article.id}/`} class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors after:absolute after:inset-0">
                     {article.data.title}
                   </a>
                 </h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                <p class="text-gray-600 dark:text-gray-400 mb-5 line-clamp-2">
                   {article.data.description}
                 </p>
                 <div class="flex flex-wrap gap-2">
                   {article.data.tags.map((tag) => (
-                    <span class="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                    <span class="px-2.5 py-1 text-xs font-medium rounded-lg bg-gray-100/80 dark:bg-gray-700/80 text-gray-600 dark:text-gray-400">
                       {tag}
                     </span>
                   ))}
@@ -147,38 +175,39 @@ type Category = typeof categories[number];
 
     <!-- Code Snippets -->
     <section>
-      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">
         Code Snippets
       </h2>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sortedSnippets.map((snippet) => (
           <article
-            class="snippet-card bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
+            class="snippet-card group relative bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
             data-category={snippet.data.category}
           >
-            <div class="p-6">
-              <div class="flex items-center gap-2 mb-3">
-                <span class="px-2 py-1 text-xs font-medium rounded bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
+            <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="p-6 relative">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-fuchsia-100/80 dark:bg-fuchsia-900/50 text-fuchsia-700 dark:text-fuchsia-300 ring-1 ring-fuchsia-700/10 dark:ring-fuchsia-300/20">
                   {snippet.data.category}
                 </span>
-                <span class="px-2 py-1 text-xs font-medium rounded bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">
+                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-amber-100/80 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 ring-1 ring-amber-700/10 dark:ring-amber-300/20">
                   {snippet.data.language}
                 </span>
-                <time class="text-sm text-gray-500 dark:text-gray-400">
+                <time class="text-sm text-gray-500 dark:text-gray-400 font-medium">
                   {snippet.data.date.toLocaleDateString()}
                 </time>
               </div>
-              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                <a href={`/snippets/${snippet.slug}/`} class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                <a href={`/snippets/${snippet.id}/`} class="hover:text-fuchsia-600 dark:hover:text-fuchsia-400 transition-colors after:absolute after:inset-0">
                   {snippet.data.title}
                 </a>
               </h3>
-              <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+              <p class="text-gray-600 dark:text-gray-400 mb-5 line-clamp-2">
                 {snippet.data.description}
               </p>
               <div class="flex flex-wrap gap-2">
                 {snippet.data.tags.map((tag) => (
-                  <span class="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                  <span class="px-2.5 py-1 text-xs font-medium rounded-lg bg-gray-100/80 dark:bg-gray-700/80 text-gray-600 dark:text-gray-400">
                     {tag}
                   </span>
                 ))}
@@ -198,12 +227,12 @@ type Category = typeof categories[number];
       button.addEventListener('click', () => {
         // Update active state
         categoryButtons.forEach(btn => {
-          btn.classList.remove('active', 'bg-blue-600', 'text-white', 'border-blue-600');
-          btn.classList.add('bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-gray-100', 'border-gray-300', 'dark:border-gray-600');
+          btn.classList.remove('active', 'bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-white', 'shadow-sm', 'ring-1', 'ring-gray-200', 'dark:ring-gray-700');
+          btn.classList.add('text-gray-600', 'dark:text-gray-400');
         });
         
-        button.classList.remove('bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-gray-100', 'border-gray-300', 'dark:border-gray-600');
-        button.classList.add('active', 'bg-blue-600', 'text-white', 'border-blue-600');
+        button.classList.add('active', 'bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-white', 'shadow-sm', 'ring-1', 'ring-gray-200', 'dark:ring-gray-700');
+        button.classList.remove('text-gray-600', 'dark:text-gray-400');
 
         const category = button.dataset.category;
 
@@ -221,8 +250,8 @@ type Category = typeof categories[number];
     // Set initial active state
     const allButton = document.querySelector('.category-btn[data-category="All"]');
     if (allButton) {
-      allButton.classList.remove('bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-gray-100', 'border-gray-300', 'dark:border-gray-600');
-      allButton.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+      allButton.classList.add('active', 'bg-white', 'dark:bg-gray-800', 'text-gray-900', 'dark:text-white', 'shadow-sm', 'ring-1', 'ring-gray-200', 'dark:ring-gray-700');
+      allButton.classList.remove('text-gray-600', 'dark:text-gray-400');
     }
   </script>
 </Layout>

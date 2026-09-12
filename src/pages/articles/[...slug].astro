@@ -1,12 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import { type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles');
   return articles.map((article) => ({
-    params: { slug: article.slug },
+    params: { slug: article.id },
     props: { article },
   }));
 }
@@ -16,16 +16,14 @@ type Props = {
 };
 
 const { article } = Astro.props;
-const { Content } = await article.render();
+const { Content, headings } = await render(article);
 
 // Generate Table of Contents from headings
-const headings = article.rendered?.match(/<h([2-6])[^>]*>(.*?)<\/h\1>/gi) || [];
-const toc = headings.map((heading) => {
-  const level = parseInt(heading.match(/<h([2-6])/)?.[1] || '2');
-  const text = heading.replace(/<[^>]*>/g, '');
-  const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-  return { level, text, id };
-});
+const toc = headings.map((heading) => ({
+  level: heading.depth,
+  text: heading.text,
+  id: heading.slug,
+}));
 ---
 
 <Layout 
@@ -33,18 +31,20 @@ const toc = headings.map((heading) => {
   description={article.data.description}
   noindex={article.data.draft}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="lg:grid lg:grid-cols-4 lg:gap-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+    <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+      
       <!-- Main Content -->
-      <div class="lg:col-span-3">
-        <article class="prose prose-lg dark:prose-invert max-w-none">
+      <div class="lg:col-span-8 lg:col-start-1">
+        <article class="prose dark:prose-invert max-w-[65ch] mx-auto lg:mx-0">
+          
           <!-- Article Header -->
-          <header class="mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
-            <div class="flex items-center gap-2 mb-4">
-              <span class="px-3 py-1 text-sm font-medium rounded bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+          <header class="mb-10 pb-8 border-b border-gray-200/60 dark:border-gray-800/60">
+            <div class="flex flex-wrap items-center gap-3 mb-6">
+              <span class="px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full bg-indigo-100/80 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-700/10 dark:ring-indigo-300/20">
                 {article.data.category}
               </span>
-              <time class="text-sm text-gray-500 dark:text-gray-400">
+              <time class="text-sm font-medium text-gray-500 dark:text-gray-400">
                 {article.data.date.toLocaleDateString('en-US', { 
                   year: 'numeric', 
                   month: 'long', 
@@ -53,22 +53,56 @@ const toc = headings.map((heading) => {
               </time>
             </div>
             
-            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 leading-[1.1]">
               {article.data.title}
             </h1>
             
-            <p class="text-xl text-gray-600 dark:text-gray-400 mb-6">
+            <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed font-light mb-6">
               {article.data.description}
             </p>
             
             <div class="flex flex-wrap gap-2">
               {article.data.tags.map((tag) => (
-                <span class="px-3 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                <span class="px-2.5 py-1 text-xs font-medium rounded-lg bg-gray-100/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 border border-gray-200/50 dark:border-gray-700/50">
                   #{tag}
                 </span>
               ))}
             </div>
+            
+            {article.data.coverImage?.src && (
+              <div class="mt-10 rounded-3xl overflow-hidden shadow-2xl border border-gray-200/50 dark:border-gray-700/50">
+                <img 
+                  src={article.data.coverImage.src} 
+                  alt={article.data.coverImage.alt || article.data.title}
+                  class="w-full h-auto max-h-[500px] object-cover"
+                />
+              </div>
+            )}
           </header>
+
+          <!-- Mobile TOC (visible only on small screens) -->
+          {toc.length > 0 && (
+            <details class="lg:hidden mb-10 group bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 overflow-hidden">
+              <summary class="flex items-center justify-between p-4 font-semibold cursor-pointer text-gray-900 dark:text-white list-none outline-none">
+                In this article
+                <svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </summary>
+              <nav class="px-4 pb-4 space-y-2 border-t border-gray-200/50 dark:border-gray-800/50 pt-4">
+                {toc.map((item) => (
+                  <a
+                    href={`#${item.id}`}
+                    class={`block text-sm transition-colors ${
+                      item.level === 2 
+                        ? 'text-gray-800 dark:text-gray-200 font-medium' 
+                        : 'text-gray-500 dark:text-gray-400 ml-4'
+                    } hover:text-indigo-600 dark:hover:text-indigo-400`}
+                  >
+                    {item.text}
+                  </a>
+                ))}
+              </nav>
+            </details>
+          )}
 
           <!-- Article Content -->
           <div class="article-content">
@@ -77,43 +111,40 @@ const toc = headings.map((heading) => {
         </article>
       </div>
 
-      <!-- Sidebar with Table of Contents -->
-      <aside class="hidden lg:block lg:col-span-1">
-        <div class="sticky top-24">
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Table of Contents
+      <!-- Desktop Sidebar with TOC -->
+      <aside class="hidden lg:block lg:col-span-4">
+        <div class="sticky top-28">
+          <div class="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md rounded-3xl border border-gray-200/50 dark:border-gray-800/50 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)]">
+            <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-6">
+              In this article
             </h3>
             
             {toc.length > 0 ? (
-              <nav class="space-y-2">
+              <nav class="space-y-3">
                 {toc.map((item) => (
                   <a
                     href={`#${item.id}`}
-                    class={`block text-sm transition-colors ${
+                    class={`block text-sm transition-all duration-200 ${
                       item.level === 2 
-                        ? 'text-gray-900 dark:text-white font-medium' 
-                        : 'text-gray-600 dark:text-gray-400 ml-4'
-                    } hover:text-blue-600 dark:hover:text-blue-400`}
+                        ? 'text-gray-700 dark:text-gray-300 font-medium hover:translate-x-1' 
+                        : 'text-gray-500 dark:text-gray-500 ml-4 hover:text-gray-700 dark:hover:text-gray-300'
+                    } hover:text-indigo-600 dark:hover:text-indigo-400`}
                   >
                     {item.text}
                   </a>
                 ))}
               </nav>
             ) : (
-              <p class="text-sm text-gray-500 dark:text-gray-400">
+              <p class="text-sm text-gray-500 dark:text-gray-500">
                 No headings found
               </p>
             )}
           </div>
 
-          <!-- Related Articles -->
-          <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Related Articles
-            </h3>
-            <a href="/" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-              Browse all articles →
+          <div class="mt-6 flex items-center justify-center p-6 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 dark:from-indigo-900/10 dark:to-purple-900/10 rounded-3xl border border-indigo-100 dark:border-indigo-900/30">
+            <a href="/" class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+              Back to all articles
             </a>
           </div>
         </div>
@@ -139,71 +170,74 @@ const toc = headings.map((heading) => {
     // Add IDs to headings for TOC linking
     const headings = document.querySelectorAll('.article-content h2, .article-content h3, .article-content h4, .article-content h5, .article-content h6');
     headings.forEach(heading => {
-      const text = heading.textContent || '';
-      const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-      heading.id = id;
+      if(!heading.id) {
+        const text = heading.textContent || '';
+        const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        heading.id = id;
+      }
     });
   </script>
 </Layout>
 
-<style>
-  .prose {
-    @apply text-gray-900 dark:text-gray-100;
+<style is:global>
+  /* Premium Typography & UX Styling */
+  .article-content {
+    @apply text-gray-800 dark:text-gray-300 text-lg md:text-[1.125rem] leading-[1.75];
   }
   
-  .prose h2 {
-    @apply text-2xl font-bold mt-8 mb-4 text-gray-900 dark:text-white;
+  .article-content h2 {
+    @apply text-2xl md:text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white tracking-tight;
   }
   
-  .prose h3 {
-    @apply text-xl font-semibold mt-6 mb-3 text-gray-900 dark:text-white;
+  .article-content h3 {
+    @apply text-xl md:text-2xl font-semibold mt-10 mb-4 text-gray-900 dark:text-white tracking-tight;
   }
   
-  .prose p {
-    @apply mb-4 leading-relaxed;
+  .article-content p {
+    @apply mb-6;
   }
   
-  .prose a {
-    @apply text-blue-600 dark:text-blue-400 hover:underline;
+  .article-content a {
+    @apply text-indigo-600 dark:text-indigo-400 font-medium decoration-indigo-300/50 hover:decoration-indigo-500 underline underline-offset-4 transition-all;
   }
   
-  .prose code {
-    @apply bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-sm;
+  .article-content code {
+    @apply bg-gray-100 dark:bg-gray-800 text-indigo-600 dark:text-indigo-300 px-1.5 py-0.5 rounded-md text-[0.9em] font-mono border border-gray-200/50 dark:border-gray-700/50;
   }
   
-  .prose pre {
-    @apply bg-gray-900 dark:bg-gray-950 rounded-lg p-4 overflow-x-auto mb-4;
+  .article-content pre {
+    @apply bg-[#0d1117] dark:bg-[#0d1117] rounded-2xl p-6 overflow-x-auto mb-8 shadow-xl border border-gray-800;
   }
   
-  .prose pre code {
-    @apply bg-transparent p-0 text-gray-100;
+  .article-content pre code {
+    @apply bg-transparent p-0 text-gray-300 border-none font-mono text-sm leading-relaxed;
   }
   
-  .prose ul, .prose ol {
-    @apply mb-4 ml-6;
+  .article-content ul {
+    @apply mb-6 ml-6 list-disc space-y-2 marker:text-indigo-400;
   }
   
-  .prose li {
-    @apply mb-2;
+  .article-content ol {
+    @apply mb-6 ml-6 list-decimal space-y-2 marker:text-indigo-400 marker:font-semibold;
   }
   
-  .prose blockquote {
-    @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-700 dark:text-gray-300 mb-4;
+  .article-content blockquote {
+    @apply border-l-4 border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-r-2xl p-6 my-8 italic text-gray-700 dark:text-gray-300 text-xl font-serif;
   }
   
-  .prose img {
-    @apply rounded-lg shadow-sm my-6;
+  .article-content img {
+    @apply rounded-2xl shadow-lg my-10 w-full object-cover border border-gray-200/50 dark:border-gray-800/50;
   }
   
-  .prose table {
-    @apply w-full border-collapse mb-4;
+  .article-content table {
+    @apply w-full border-collapse mb-8 text-sm md:text-base;
   }
   
-  .prose th, .prose td {
-    @apply border border-gray-200 dark:border-gray-700 px-4 py-2 text-left;
+  .article-content th, .article-content td {
+    @apply border-b border-gray-200/60 dark:border-gray-800/60 px-4 py-4 text-left;
   }
   
-  .prose th {
-    @apply bg-gray-100 dark:bg-gray-700 font-semibold;
+  .article-content th {
+    @apply bg-gray-50/50 dark:bg-gray-900/50 font-semibold text-gray-900 dark:text-white;
   }
 </style>
