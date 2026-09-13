@@ -1,25 +1,28 @@
 ---
-title: "Quick Guide to Deploying on Netlify"
-description: "Step-by-step instructions on deploying your modern Astro site to Netlify in under two minutes."
+title: "Краткое руководство по деплою на Netlify"
+description: "Пошаговая инструкция по деплою вашего современного сайта на Astro в Netlify менее чем за две минуты."
 date: 2026-09-09
 category: "Other"
 tags: ["deployment", "hosting", "netlify"]
+coverImage:
+  src: "/images/articles/deploying-to-netlify.jpg"
+  alt: "Обложка"
 draft: false
 featured: false
 ---
 
-# Quick Guide to Deploying on Netlify
+# Краткое руководство по деплою на Netlify
 
-Netlify is one of the premier hosting platforms for Jamstack applications. Deploying your Astro project there is incredibly straightforward.
+Netlify — это одна из ведущих платформ хостинга для Jamstack-приложений. Деплой (развертывание) вашего проекта Astro там происходит невероятно просто.
 
-## Steps for Deployment
+## Шаги для деплоя
 
-1. **Push your code to GitHub:** Make sure your Astro project is committed and pushed to a GitHub repository.
-2. **Log into Netlify:** Go to [netlify.com](https://www.netlify.com/) and click "Add new site" -> "Import an existing project".
-3. **Connect to GitHub:** Authorize Netlify to access your repositories and select your project.
-4. **Configure Build Settings:** Netlify is smart enough to auto-detect Astro. The default settings should be:
+1. **Запушьте свой код на GitHub:** Убедитесь, что ваш проект Astro закоммичен и отправлен в репозиторий на GitHub.
+2. **Войдите в Netlify:** Перейдите на [netlify.com](https://www.netlify.com/) и нажмите "Add new site" -> "Import an existing project".
+3. **Подключитесь к GitHub:** Разрешите Netlify доступ к вашим репозиториям и выберите нужный проект.
+4. **Настройте параметры сборки:** Netlify достаточно умен, чтобы автоматически определить Astro. Настройки по умолчанию должны быть такими:
    - **Build command:** `npm run build`
    - **Publish directory:** `dist`
-5. **Deploy:** Click the deploy button and wait a few seconds.
+5. **Деплой:** Нажмите кнопку деплоя и подождите несколько секунд.
 
-Your site is now live globally on Netlify's Edge network! If you added an SSR adapter (like `@astrojs/netlify`), your dynamic API routes will automatically be converted to Netlify Functions.
+Ваш сайт теперь доступен глобально в Edge-сети Netlify! Если вы добавили SSR-адаптер (например, `@astrojs/netlify`), ваши динамические API-маршруты будут автоматически преобразованы в функции Netlify (Netlify Functions).

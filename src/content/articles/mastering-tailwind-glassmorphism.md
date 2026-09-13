@@ -1,35 +1,38 @@
 ---
-title: "Mastering Tailwind CSS Glassmorphism"
-description: "A quick guide on creating premium, frosted-glass UI components using Tailwind CSS utilities."
+title: "Мастер-класс: Глассморфизм с помощью Tailwind CSS"
+description: "Краткое руководство по созданию премиальных UI-компонентов с эффектом матового стекла с использованием утилит Tailwind CSS."
 date: 2026-09-10
 category: "UI"
 tags: ["css", "design", "tailwind"]
+coverImage:
+  src: "/images/articles/mastering-tailwind-glassmorphism.jpg"
+  alt: "Обложка"
 draft: false
 featured: false
 ---
 
-# Mastering Tailwind CSS Glassmorphism
+# Мастер-класс: Глассморфизм с помощью Tailwind CSS
 
-Glassmorphism is a UI design trend that mimics the look of frosted glass. It adds depth, elegance, and a premium feel to your web applications.
+Глассморфизм (Glassmorphism) — это тренд в UI-дизайне, имитирующий эффект матового стекла. Он добавляет глубину, элегантность и ощущение премиальности вашим веб-приложениям.
 
-## The Recipe
+## Рецепт
 
-To create a beautiful glassmorphism effect in Tailwind CSS, you need a combination of semi-transparent backgrounds, background blur, and subtle borders.
+Чтобы создать красивый эффект глассморфизма в Tailwind CSS, вам понадобится комбинация полупрозрачного фона, размытия заднего плана (background blur) и едва заметных границ.
 
-### Example Component
+### Пример компонента
 
-Here is a simple example of a glass card:
+Вот простой пример карточки с эффектом стекла:
 
 ```html
 <div class="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg rounded-2xl p-8">
-  <h2 class="text-2xl font-bold">Premium Card</h2>
-  <p class="text-gray-600">This looks like frosted glass!</p>
+  <h2 class="text-2xl font-bold">Премиум Карточка</h2>
+  <p class="text-gray-600">Это выглядит как матовое стекло!</p>
 </div>
 ```
 
-### Breakdown of Utilities:
-- `bg-white/60`: Sets the background to white with 60% opacity.
-- `backdrop-blur-xl`: Blurs the elements behind the component, creating the frosted glass effect.
-- `border-gray-200/50`: A very light, semi-transparent border to give the "glass edge" highlight.
+### Разбор утилит:
+- `bg-white/60`: Устанавливает белый фон с прозрачностью 60%.
+- `backdrop-blur-xl`: Размывает элементы позади компонента, создавая эффект матового стекла.
+- `border-gray-200/50`: Очень светлая, полупрозрачная рамка, создающая блик на «краю стекла».
 
-Combine this with dynamic gradients and floating animations to truly wow your users!
+Сочетайте это с динамическими градиентами и плавающими анимациями, чтобы по-настоящему впечатлить своих пользователей!

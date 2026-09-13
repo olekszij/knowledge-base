@@ -1,24 +1,27 @@
 ---
-title: "Getting Started with Astro"
-description: "A comprehensive guide to setting up your first Astro project for ultra-fast websites"
+title: "С чего начать работу с Astro"
+description: "Подробное руководство по настройке вашего первого проекта Astro для сверхбыстрых веб-сайтов"
 date: 2024-01-15
 category: "Astro"
 tags: ["beginner", "setup", "tutorial"]
+coverImage:
+  src: "/images/articles/getting-started-with-astro.jpg"
+  alt: "Обложка"
 draft: false
 featured: true
 ---
 
-# Getting Started with Astro
+# С чего начать работу с Astro
 
-Astro is a modern web framework that helps you build faster, content-focused websites. In this guide, we'll walk through setting up your first Astro project.
+Astro — это современный веб-фреймворк, который помогает создавать невероятно быстрые сайты, ориентированные на контент. В этом руководстве мы разберем процесс создания вашего первого проекта на Astro.
 
-## What is Astro?
+## Что такое Astro?
 
-Astro is designed to reduce JavaScript overhead and deliver lightning-fast loading times. It uses a "islands" architecture where you can sprinkle interactive components where needed while keeping the rest of your site static.
+Astro разработан для уменьшения накладных расходов от JavaScript и обеспечения молниеносного времени загрузки. Он использует архитектуру «островов», благодаря которой вы можете точечно добавлять интерактивные компоненты там, где это необходимо, оставляя остальную часть сайта статической.
 
-## Installation
+## Установка
 
-Start by creating a new Astro project:
+Начните с создания нового проекта Astro:
 
 ```bash
 npm create astro@latest my-astro-site
@@ -27,9 +30,9 @@ npm install
 npm run dev
 ```
 
-## Project Structure
+## Структура проекта
 
-Here's the basic structure of an Astro project:
+Вот базовая структура проекта Astro:
 
 ```
 my-astro-site/
@@ -43,33 +46,33 @@ my-astro-site/
 └── package.json
 ```
 
-## Creating Your First Page
+## Создание вашей первой страницы
 
-Create a new file in `src/pages/index.astro`:
+Создайте новый файл по адресу `src/pages/index.astro`:
 
 ```astro
 ---
-const pageTitle = "My Astro Site"
+const pageTitle = "Мой сайт на Astro"
 ---
 <html>
   <head>
     <title>{pageTitle}</title>
   </head>
   <body>
-    <h1>Welcome to {pageTitle}</h1>
+    <h1>Добро пожаловать на {pageTitle}</h1>
   </body>
 </html>
 ```
 
-## Adding Components
+## Добавление компонентов
 
-Astro supports multiple UI frameworks. Let's add React:
+Astro поддерживает множество UI-фреймворков. Давайте добавим React:
 
 ```bash
 npx astro add react
 ```
 
-Now you can create React components in your project:
+Теперь вы можете создавать React-компоненты в вашем проекте:
 
 ```astro
 ---
@@ -78,9 +81,9 @@ import MyReactComponent from '../components/MyReactComponent.jsx';
 <MyReactComponent />
 ```
 
-## Content Collections
+## Коллекции контента (Content Collections)
 
-For blog posts and documentation, use Astro's Content Collections:
+Для постов в блогах и документации используйте коллекции контента Astro:
 
 ```typescript
 // src/content/config.ts
@@ -98,19 +101,19 @@ const blog = defineCollection({
 export const collections = { blog };
 ```
 
-## Deployment
+## Деплой
 
-Astro projects can be deployed to various platforms:
+Проекты Astro можно развернуть на различных платформах:
 
-- **Vercel**: `npm run build` then push to GitHub
-- **Netlify**: Connect your repository
-- **Cloudflare Pages**: Use the Astro adapter
+- **Vercel**: Запустите `npm run build`, затем запушьте в GitHub
+- **Netlify**: Подключите ваш репозиторий
+- **Cloudflare Pages**: Используйте соответствующий адаптер Astro
 
-## Next Steps
+## Следующие шаги
 
-- Explore Astro's documentation
-- Add Tailwind CSS for styling
-- Set up a CMS for content management
-- Configure SEO and performance optimization
+- Изучите официальную документацию Astro
+- Добавьте Tailwind CSS для стилизации
+- Настройте CMS для управления контентом
+- Настройте SEO и оптимизацию производительности
 
-Happy coding with Astro!
+Удачной разработки с Astro!

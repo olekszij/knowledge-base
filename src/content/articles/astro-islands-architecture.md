@@ -1,48 +1,51 @@
 ---
-title: Demystifying Astro Islands Architecture
-description: Learn how Astro Islands allow you to build blazing fast websites by shipping zero JavaScript by default.
+title: "Разбираем архитектуру островов (Astro Islands)"
+description: "Узнайте, как «острова Astro» позволяют создавать молниеносно быстрые веб-сайты, по умолчанию не отправляя JavaScript клиенту."
 date: 2026-09-13
-category: Guides
+category: "Guides"
 tags:
   - Astro
   - Performance
   - Architecture
+coverImage:
+  src: "/images/articles/astro-islands-architecture.jpg"
+  alt: "Обложка"
 draft: false
 ---
 
-# Demystifying Astro Islands Architecture
+# Разбираем архитектуру островов (Astro Islands)
 
-Astro's defining feature is its **Islands Architecture**. But what exactly is an "island," and why does it make Astro so fast?
+Определяющей особенностью Astro является его **Архитектура Островов (Islands Architecture)**. Но что именно такое «остров» и почему он делает Astro таким быстрым?
 
-## The Problem with SPAs
+## Проблема с SPA
 
-Traditional Single Page Applications (SPAs) built with React, Vue, or Svelte require the browser to download and execute massive JavaScript bundles just to render the page. Even if 90% of your page is static text (like a blog post), the framework still hydrates the entire page.
+Традиционные одностраничные приложения (SPA), созданные с использованием React, Vue или Svelte, требуют, чтобы браузер загружал и выполнял массивные пакеты JavaScript (бандлы) просто для рендеринга страницы. Даже если 90% вашей страницы — это статический текст (например, пост в блоге), фреймворк все равно гидратирует всю страницу целиком.
 
-This monolithic hydration slows down the "Time to Interactive" (TTI) and degrades the user experience, especially on slower networks or mobile devices.
+Такая монолитная гидратация замедляет «Время до интерактивности» (Time to Interactive, TTI) и ухудшает пользовательский опыт, особенно в медленных сетях или на мобильных устройствах.
 
-## The Astro Island Solution
+## Решение — Острова Astro
 
-Astro flips this paradigm. By default, **Astro ships ZERO JavaScript to the client**. All components are rendered to HTML on the server.
+Astro переворачивает эту парадигму. По умолчанию, **Astro отправляет НОЛЬ JavaScript клиенту**. Все компоненты рендерятся в HTML на сервере.
 
-An **Astro Island** is an interactive UI component embedded within this static HTML. You can think of it as an "island of interactivity in a sea of static content."
+**Остров Astro** — это интерактивный компонент UI, встроенный в этот статический HTML. Вы можете думать об этом как об «острове интерактивности в море статического контента».
 
-Instead of hydrating the entire page, Astro only hydrates the specific components that need JavaScript (like an image carousel or a dark mode toggle).
+Вместо гидратации всей страницы Astro гидратирует только конкретные компоненты, которым нужен JavaScript (например, карусель изображений или переключатель темного режима).
 
-## Client Directives
+## Клиентские директивы
 
-To create an island, you use **Client Directives**. These are special attributes you add to a framework component (React, Svelte, Vue) to tell Astro *how* and *when* to hydrate it.
+Для создания острова используются **Клиентские директивы (Client Directives)**. Это специальные атрибуты, которые вы добавляете к компоненту фреймворка (React, Svelte, Vue), чтобы указать Astro, *как* и *когда* его гидратировать.
 
-- `client:load`: Hydrates the component immediately when the page loads. Best for high-priority UI elements like a navigation menu.
-- `client:idle`: Hydrates the component only when the main thread is free. Perfect for lower-priority elements that don't need instant interaction.
-- `client:visible`: Hydrates the component only when it enters the viewport. Excellent for heavy components lower down on the page (like a complex chart or image gallery).
-- `client:media`: Hydrates the component only when a specific CSS media query is met (e.g., `client:media="(max-width: 50em)"` for a mobile menu).
-- `client:only="react"`: Skips server-side rendering entirely and only renders on the client. Useful for components that depend on browser APIs (like `window.localStorage`).
+- `client:load`: Гидратирует компонент сразу после загрузки страницы. Лучше всего подходит для важных элементов пользовательского интерфейса, таких как навигационное меню.
+- `client:idle`: Гидратирует компонент только тогда, когда главный поток свободен. Идеально для менее важных элементов, не требующих мгновенного взаимодействия.
+- `client:visible`: Гидратирует компонент только тогда, когда он попадает в область видимости. Отлично подходит для тяжелых компонентов, расположенных ниже на странице (например, сложный график или галерея изображений).
+- `client:media`: Гидратирует компонент только при выполнении определенного CSS медиа-запроса (например, `client:media="(max-width: 50em)"` для мобильного меню).
+- `client:only="react"`: Полностью пропускает серверный рендеринг и рендерится только на клиенте. Полезно для компонентов, которые зависят от API браузера (например, `window.localStorage`).
 
-## Example
+## Пример
 
 ```astro
 ---
-// This runs on the server. No JS is sent to the client.
+// Это выполняется на сервере. JS не отправляется клиенту.
 import StaticHeader from '../components/StaticHeader.astro';
 import InteractiveCounter from '../components/InteractiveCounter.jsx';
 import HeavyChart from '../components/HeavyChart.svelte';
@@ -50,22 +53,22 @@ import HeavyChart from '../components/HeavyChart.svelte';
 
 <html>
   <body>
-    <!-- 100% static HTML -->
+    <!-- На 100% статический HTML -->
     <StaticHeader />
     
     <main>
-      <p>Here is a static paragraph.</p>
+      <p>Здесь находится статический абзац.</p>
       
-      <!-- Hydrates immediately -->
+      <!-- Гидратируется немедленно -->
       <InteractiveCounter client:load />
       
-      <!-- Hydrates only when scrolled into view -->
+      <!-- Гидратируется только при прокрутке в область видимости -->
       <HeavyChart client:visible />
     </main>
   </body>
 </html>
 ```
 
-## Conclusion
+## Заключение
 
-By surgically applying JavaScript only where it's needed using client directives, Astro Islands ensure your website remains incredibly fast and lightweight without sacrificing interactivity!
+Путем хирургически точного применения JavaScript только там, где это необходимо с использованием клиентских директив, «острова Astro» гарантируют, что ваш сайт останется невероятно быстрым и легким без ущерба для интерактивности!

@@ -1,28 +1,31 @@
 ---
-title: How to Fetch Data in Astro Components
-description: Learn how to natively fetch data from APIs, CMSs, and databases directly in your Astro components.
+title: "Как получать данные в компонентах Astro"
+description: "Узнайте, как нативно загружать данные из API, CMS и баз данных прямо в компонентах Astro."
 date: 2026-09-13
-category: Guides
+category: "Guides"
 tags:
   - Astro
   - Data Fetching
   - API
+coverImage:
+  src: "/images/articles/astro-data-fetching.jpg"
+  alt: "Обложка"
 draft: false
 ---
 
-# How to Fetch Data in Astro Components
+# Как получать данные в компонентах Astro
 
-Fetching data in Astro is incredibly straightforward because Astro components have access to top-level `await`. You don't need complex `useEffect` hooks or `getServerSideProps` functions; you can just write plain JavaScript/TypeScript right in the component script block.
+Получение данных в Astro происходит невероятно просто, поскольку компоненты Astro имеют доступ к `await` на верхнем уровне. Вам не нужны сложные хуки вроде `useEffect` или функции `getServerSideProps`; вы можете писать обычный JavaScript/TypeScript прямо в блоке скрипта компонента.
 
-## Top-level Await
+## Await на верхнем уровне
 
-In Astro, the code block at the top of your `.astro` file (delineated by `---`) runs on the server at build time (or at request time if using SSR). This means you can fetch data securely without exposing API keys to the client.
+В Astro блок кода в верхней части вашего `.astro` файла (ограниченный `---`) выполняется на сервере во время сборки (или во время запроса, если используется SSR). Это означает, что вы можете безопасно получать данные, не раскрывая API-ключи клиенту.
 
 ```astro
 ---
 // src/components/UserList.astro
 
-// This runs on the server!
+// Это выполняется на сервере!
 const response = await fetch('https://jsonplaceholder.typicode.com/users');
 const users = await response.json();
 ---
@@ -34,18 +37,18 @@ const users = await response.json();
 </ul>
 ```
 
-## Fetching Data from a CMS (like Keystatic)
+## Получение данных из CMS (например, Keystatic)
 
-If you are using a local CMS or Content Collections, you don't even need `fetch`. You can use Astro's built-in `getCollection` API.
+Если вы используете локальную CMS или коллекции контента (Content Collections), вам даже не нужен `fetch`. Вы можете использовать встроенный API Astro `getCollection`.
 
 ```astro
 ---
 import { getCollection } from 'astro:content';
 
-// Fetch all articles from the 'articles' collection
+// Получить все статьи из коллекции 'articles'
 const allArticles = await getCollection('articles');
 
-// Filter out drafts
+// Отфильтровать черновики
 const publishedArticles = allArticles.filter(article => !article.data.draft);
 ---
 
@@ -58,13 +61,13 @@ const publishedArticles = allArticles.filter(article => !article.data.draft);
 </div>
 ```
 
-## Environment Variables and Security
+## Переменные окружения и безопасность
 
-Because Astro component scripts run on the server, it is the perfect place to use private environment variables (like Database passwords or secret API tokens).
+Поскольку скрипты компонентов Astro выполняются на сервере, это идеальное место для использования приватных переменных окружения (например, паролей от базы данных или секретных API-токенов).
 
 ```astro
 ---
-// This token is safe! It will NEVER be sent to the browser.
+// Этот токен в безопасности! Он НИКОГДА не будет отправлен в браузер.
 const API_TOKEN = import.meta.env.SECRET_API_TOKEN;
 
 const response = await fetch('https://api.mysecuredata.com/v1/info', {
@@ -78,14 +81,14 @@ const secureData = await response.json();
 <div>{secureData.message}</div>
 ```
 
-If you need an environment variable to be accessible on the client side (e.g., inside a React component tracking analytics), you must prefix it with `PUBLIC_`.
+Если вам нужно, чтобы переменная окружения была доступна на стороне клиента (например, внутри React-компонента для отслеживания аналитики), вам нужно добавить к ней префикс `PUBLIC_`.
 
 ```text
-// .env file
-SECRET_PASSWORD=supersecret      # Only available in Astro frontmatter
-PUBLIC_ANALYTICS_ID=UA-123456    # Available everywhere, including client JS
+// файл .env
+SECRET_PASSWORD=supersecret      # Доступно только во frontmatter Astro
+PUBLIC_ANALYTICS_ID=UA-123456    # Доступно везде, включая клиентский JS
 ```
 
-## Conclusion
+## Заключение
 
-Data fetching in Astro is as simple as writing standard asynchronous JavaScript. Thanks to top-level `await` and server-side rendering, your data fetches are fast, secure, and SEO-friendly out of the box!
+Получение данных в Astro так же просто, как написание стандартного асинхронного JavaScript. Благодаря `await` на верхнем уровне и серверному рендерингу (SSR), загрузка данных происходит быстро, безопасно и отлично подходит для SEO прямо из коробки!

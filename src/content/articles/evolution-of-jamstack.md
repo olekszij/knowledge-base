@@ -1,26 +1,29 @@
 ---
-title: "The Evolution of the Jamstack"
-description: "How the Jamstack ecosystem has shifted from purely static HTML to dynamic, edge-rendered applications."
+title: "Эволюция Jamstack"
+description: "Как экосистема Jamstack перешла от чисто статического HTML к динамическим приложениям, рендерящимся на периферии (edge)."
 date: 2026-09-11
 category: "Jamstack"
 tags: ["architecture", "edge", "serverless"]
+coverImage:
+  src: "/images/articles/evolution-of-jamstack.jpg"
+  alt: "Обложка"
 draft: false
 featured: false
 ---
 
-# The Evolution of the Jamstack
+# Эволюция Jamstack
 
-The term "Jamstack" (JavaScript, APIs, and Markup) originally referred to websites built completely statically and served from a CDN. However, as web development has evolved, so has the Jamstack.
+Термин "Jamstack" (JavaScript, APIs и Markup) изначально относился к веб-сайтам, полностью построенным статически и раздаваемым из CDN. Однако по мере развития веб-разработки развивался и Jamstack.
 
-## From Static to Edge
+## От статики к Edge (периферийным вычислениям)
 
-Initially, the biggest drawback of the Jamstack was build times. If you had 10,000 pages, regenerating the entire site took a long time. 
+Изначально самым большим недостатком Jamstack было время сборки. Если у вас было 10 000 страниц, перегенерация всего сайта занимала много времени.
 
-Today, modern frameworks like Next.js, Nuxt, and **Astro** have introduced concepts like:
-- **Incremental Static Regeneration (ISR):** Updating static pages in the background without a full rebuild.
-- **Server-Side Rendering (SSR) on the Edge:** Running server logic instantly on CDN nodes close to the user.
-- **Islands Architecture:** Loading JavaScript only for specific components that need interactivity.
+Сегодня современные фреймворки, такие как Next.js, Nuxt и **Astro**, внедрили такие концепции, как:
+- **Инкрементальная статическая регенерация (ISR):** Обновление статических страниц в фоновом режиме без полной пересборки.
+- **Серверный рендеринг (SSR) на Edge:** Выполнение серверной логики мгновенно на узлах CDN, расположенных максимально близко к пользователю.
+- **Архитектура островов (Islands Architecture):** Загрузка JavaScript только для конкретных компонентов, которым нужна интерактивность.
 
-## What it means for Developers
+## Что это значит для разработчиков
 
-You no longer have to choose between a fast static site and a dynamic web application. With modern tools, you can have the security and speed of the Jamstack with the dynamic capabilities of a traditional server.
+Вам больше не нужно выбирать между быстрым статическим сайтом и динамическим веб-приложением. С помощью современных инструментов вы можете получить безопасность и скорость Jamstack вместе с динамическими возможностями традиционного сервера.

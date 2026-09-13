@@ -1,22 +1,25 @@
 ---
-title: Understanding File-Based Routing in Astro
-description: A comprehensive guide to how routing works in Astro and how to structure your project.
+title: "Понимание маршрутизации на основе файлов в Astro"
+description: "Подробное руководство о том, как работает маршрутизация в Astro и как правильно структурировать свой проект."
 date: 2026-09-13
-category: Guides
+category: "Guides"
 tags:
   - Astro
   - Routing
   - Frontend
+coverImage:
+  src: "/images/articles/astro-routing-guide.jpg"
+  alt: "Обложка"
 draft: false
 ---
 
-# Understanding File-Based Routing in Astro
+# Понимание маршрутизации на основе файлов в Astro
 
-Astro uses a **file-based routing** approach. Every `.astro`, `.md`, or `.mdx` file located inside the `src/pages/` directory automatically becomes a page on your website.
+Astro использует подход **маршрутизации на основе файлов (file-based routing)**. Каждый файл `.astro`, `.md` или `.mdx`, расположенный внутри директории `src/pages/`, автоматически становится страницей на вашем веб-сайте.
 
-## Static Routes
+## Статические маршруты
 
-The simplest form of routing is static routing. The directory structure directly maps to the URL structure of your site.
+Самая простая форма маршрутизации — статическая. Структура директорий напрямую отображается в структуру URL вашего сайта.
 
 ```text
 src/pages/
@@ -30,17 +33,17 @@ src/pages/
 ```
 
 > [!TIP]
-> Both `about.astro` and `about/index.astro` result in the exact same URL `/about`. It's a matter of preference which one you use!
+> Как `about.astro`, так и `about/index.astro` приводят к одному и тому же URL `/about`. Что из этого использовать — исключительно дело ваших предпочтений!
 
-## Dynamic Routes
+## Динамические маршруты
 
-When you don't know the exact names of your pages ahead of time (like blog posts or product pages), you can use **dynamic routes**. A dynamic route is created by adding brackets `[]` to a file name.
+Когда вы заранее не знаете точных имен своих страниц (например, для постов в блоге или страниц продуктов), вы можете использовать **динамические маршруты**. Динамический маршрут создается путем добавления квадратных скобок `[]` к имени файла.
 
-For example, `src/pages/authors/[author].astro` generates routes for any author name.
+Например, `src/pages/authors/[author].astro` генерирует маршруты для любого имени автора.
 
 ### `getStaticPaths()`
 
-Because Astro is a static site generator by default, any dynamic route requires an exported `getStaticPaths()` function. This function tells Astro exactly which pages to build at build time.
+Поскольку Astro по умолчанию является генератором статических сайтов, любой динамический маршрут требует экспортируемой функции `getStaticPaths()`. Эта функция точно указывает Astro, какие именно страницы нужно сгенерировать во время сборки.
 
 ```astro
 ---
@@ -56,30 +59,30 @@ export function getStaticPaths() {
 const { author } = Astro.params;
 ---
 
-<h1>Articles by {author}</h1>
+<h1>Статьи автора {author}</h1>
 ```
 
-## Rest Parameters (Catch-all Routes)
+## Rest-параметры (Catch-all маршруты)
 
-If you need a single file to handle routes with multiple dynamic path segments (like a nested folder structure), you can use a rest parameter `[...slug]`.
+Если вам нужен один файл для обработки маршрутов с несколькими динамическими сегментами пути (например, вложенная структура папок), вы можете использовать rest-параметр `[...slug]`.
 
 ```astro
 ---
 // src/pages/docs/[...slug].astro
 export function getStaticPaths() {
   return [
-    { params: { slug: undefined } }, // Matches /docs
-    { params: { slug: 'getting-started' } }, // Matches /docs/getting-started
-    { params: { slug: 'api/v1/auth' } }, // Matches /docs/api/v1/auth
+    { params: { slug: undefined } }, // Соответствует /docs
+    { params: { slug: 'getting-started' } }, // Соответствует /docs/getting-started
+    { params: { slug: 'api/v1/auth' } }, // Соответствует /docs/api/v1/auth
   ];
 }
 
 const { slug } = Astro.params;
 ---
 
-<h1>Viewing docs for: {slug || 'Overview'}</h1>
+<h1>Просмотр документации для: {slug || 'Обзор'}</h1>
 ```
 
-## Conclusion
+## Заключение
 
-File-based routing makes visualizing your site's structure incredibly intuitive. By combining static files, bracket syntax for dynamic parameters, and the catch-all spread syntax, you can build any URL structure you need!
+Маршрутизация на основе файлов делает визуализацию структуры вашего сайта невероятно интуитивно понятной. Комбинируя статические файлы, синтаксис квадратных скобок для динамических параметров и catch-all синтаксис rest-параметров, вы можете построить абсолютно любую структуру URL, которая вам нужна!

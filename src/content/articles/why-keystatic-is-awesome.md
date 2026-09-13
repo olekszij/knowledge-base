@@ -1,28 +1,31 @@
 ---
-title: "Why Keystatic is the Perfect CMS for Astro"
-description: "Discover why local, Git-based CMS solutions like Keystatic are changing the game for Jamstack developers."
+title: "Почему Keystatic — идеальная CMS для Astro"
+description: "Узнайте, почему локальные CMS на базе Git, такие как Keystatic, меняют правила игры для Jamstack-разработчиков."
 date: 2026-09-12
 category: "Keystatic"
 tags: ["cms", "git", "markdown"]
+coverImage:
+  src: "/images/articles/why-keystatic-is-awesome.jpg"
+  alt: "Обложка"
 draft: false
 featured: true
 ---
 
-# Why Keystatic is the Perfect CMS for Astro
+# Почему Keystatic — идеальная CMS для Astro
 
-When building static sites with Astro, you want a Content Management System that feels just as fast and developer-friendly. Enter **Keystatic**.
+При создании статических сайтов на Astro вам нужна система управления контентом, которая была бы такой же быстрой и удобной для разработчиков. И здесь на сцену выходит **Keystatic**.
 
-## What is Keystatic?
+## Что такое Keystatic?
 
-Keystatic is a new, modern, and open-source tool that brings a beautiful visual admin UI to your local Markdown, MDX, and JSON files. Instead of storing your content in a remote database (like WordPress or Sanity), Keystatic stores it directly in your GitHub repository.
+Keystatic — это новый, современный инструмент с открытым исходным кодом, который предоставляет красивую визуальную панель администратора (UI) для ваших локальных файлов Markdown, MDX и JSON. Вместо того, чтобы хранить контент в удаленной базе данных (как WordPress или Sanity), Keystatic сохраняет его прямо в вашем GitHub-репозитории.
 
-### Key Benefits
+### Ключевые преимущества
 
-1. **Zero Database Configuration:** No servers to manage, no databases to provision.
-2. **True Git Workflow:** Every time you save an article, it creates a commit in your repository.
-3. **Perfect Astro Synergy:** Astro natively understands local Markdown/MDX files, meaning your site builds incredibly fast.
-4. **React-Based UI:** The interface is snappy and highly customizable.
+1. **Отсутствие конфигурации баз данных:** Нет серверов для управления, нет баз данных для настройки.
+2. **Настоящий Git-процесс (Git Workflow):** Каждый раз, когда вы сохраняете статью, создается коммит в вашем репозитории.
+3. **Идеальная синергия с Astro:** Astro изначально понимает локальные файлы Markdown/MDX, а это значит, что ваш сайт будет собираться невероятно быстро.
+4. **Интерфейс на базе React:** UI работает мгновенно и легко кастомизируется.
 
-## Conclusion
+## Заключение
 
-If you are building a blog, knowledge base, or documentation site with Astro, Keystatic is arguably the most seamless and frictionless CMS available today.
+Если вы создаете блог, базу знаний или сайт с документацией с помощью Astro, Keystatic, возможно, является самой удобной и беспроблемной CMS, доступной на сегодняшний день.
