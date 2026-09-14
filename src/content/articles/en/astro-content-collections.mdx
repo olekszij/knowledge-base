@@ -1,0 +1,122 @@
+---
+title: "Lesson 6: Content Collections and Zod Validation in Astro"
+description: "Learn how to strictly type, validate, and efficiently manage Markdown/MDX content in your project using Content Collections and Zod."
+date: 2026-09-14
+order: 6
+coverImage:
+  src: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
+  alt: "Coding on a laptop"
+tags:
+  - astro
+  - typescript
+  - zod
+  - markdown
+draft: false
+featured: true
+---
+
+One of the most powerful features of Astro is **Content Collections**. They allow you to organize your Markdown and MDX documents, guarantee the validity of their structure (Frontmatter), and use strict TypeScript typing throughout your project.
+
+In this lesson, we will break down how they work and how the **Zod** library helps us prevent errors.
+
+## What are Content Collections?
+
+Before collections, developers often used `Astro.glob()` to find all `.md` files in a folder. This worked, but had a few problems:
+1. You could accidentally forget to specify a required field (e.g., `title`).
+2. Typos in a date could break your site during the build process.
+3. TypeScript didn't know exactly what fields were present in your files.
+
+With **Content Collections** you get:
+- ✅ **100% Autocomplete** while writing code.
+- ✅ **Strict validation:** your site simply won't build if you forget a field.
+- ✅ **Convenient API:** `getCollection` and `render` functions.
+
+## Step 1: Folder Structure
+
+Collections *must* be located in a special `src/content/` folder or use `glob` loaders in newer versions of Astro.
+
+<Alert type="info" title="Astro 5.0+">
+In modern versions of Astro (v5.0 and higher), the Content Layer API is used with `glob()` loaders.
+</Alert>
+
+## Step 2: Defining the Schema with Zod
+
+The `src/content.config.ts` file is the heart of your collections. This is where you describe what fields you expect to see in every Markdown file.
+
+This is done using [Zod](https://zod.dev/) — a popular library for schema validation in TypeScript.
+
+```typescript
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+// Define the schema for our post
+const blogSchema = z.object({
+  title: z.string().max(60, "Title is too long!"),
+  description: z.string(),
+  date: z.date(), // Zod automatically converts the string "2024-01-01" to a Date object
+  draft: z.boolean().default(false),
+  tags: z.array(z.string()).optional(),
+  author: z.enum(["John", "Jane"]).default("John"),
+});
+
+// Create the collection
+const blog = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/blog" }),
+  schema: blogSchema,
+});
+
+export const collections = { blog };
+```
+
+<Alert type="success" title="TypeScript Magic">
+After saving this file, run `astro dev` or `astro sync`. Astro will generate hidden files in `.astro/`, and now your entire project will know the structure of `blogSchema`.
+</Alert>
+
+## Step 3: Fetching Data in a Component
+
+Now that the collection is configured, fetching posts is extremely easy using the `getCollection` function:
+
+```astro
+---
+import { getCollection } from 'astro:content';
+
+// Get only published posts
+const allPosts = await getCollection('blog', (post) => {
+  return post.data.draft !== true;
+});
+---
+
+<ul>
+  {allPosts.map((post) => (
+    <li>
+      <a href={`/blog/${post.id}`}>{post.data.title}</a>
+      <!-- post.data.title is automatically highlighted in your IDE! -->
+    </li>
+  ))}
+</ul>
+```
+
+## Step 4: Rendering Content
+
+To display the actual content of a Markdown or MDX file, the `render` function is used:
+
+```astro
+---
+import { getCollection, render } from 'astro:content';
+
+const posts = await getCollection('blog');
+const post = posts[0];
+
+// Extract the Content component and the list of headings
+const { Content, headings } = await render(post);
+---
+
+<h1>{post.data.title}</h1>
+
+<!-- Render the Markdown/MDX content -->
+<Content />
+```
+
+## Summary
+
+Content Collections + Zod is a combination that takes the safety and developer experience of Astro websites to Enterprise-level standards, while remaining incredibly simple to use.

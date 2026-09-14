@@ -1,0 +1,164 @@
+---
+title: "Стилизация в Astro"
+description: "Разбираем все способы стилизации в Astro: локальные и глобальные стили, директиву define:vars, использование препроцессоров (Sass) и интеграцию с Tailwind CSS."
+date: 2026-09-14
+order: 4
+coverImage:
+  src: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800"
+  alt: "Cover image"
+tags: ["Astro", "CSS", "Основы", "Tailwind"]
+featured: false
+---
+
+Astro предоставляет невероятно мощную и гибкую систему работы с CSS из коробки. Вы можете писать обычный CSS, использовать препроцессоры вроде Sass или Less, подключать UI-библиотеки или использовать Tailwind CSS.
+
+Давайте разберем основные подходы к стилизации Astro-компонентов.
+
+## Локальные стили (Scoped CSS) по умолчанию
+
+Когда вы пишете тег `<style>` внутри компонента `.astro`, все стили по умолчанию становятся **локальными (scoped)**. 
+
+Это означает, что они применяются **только к HTML-элементам внутри этого конкретного компонента** и никак не повлияют на другие части вашего сайта (никаких конфликтов стилей!).
+
+```astro
+---
+// src/components/Title.astro
+---
+
+<h1>Привет, Astro!</h1>
+
+<style>
+  /* Этот стиль применится только к h1 внутри этого компонента! */
+  h1 {
+    color: purple;
+    font-size: 3rem;
+  }
+</style>
+```
+
+Под капотом Astro автоматически генерирует уникальные классы (например, `h1[data-astro-cid-j7qw2xy]`), чтобы изолировать ваши стили.
+
+## Глобальные стили
+
+Иногда вам нужно задать глобальные стили: сброс отступов (`reset.css`), настройка базовых шрифтов или стилизация тега `<body>`.
+
+У вас есть два способа сделать это:
+
+**Способ 1: Импорт CSS файла**
+Вы можете создать обычный файл `styles/global.css` и импортировать его во Frontmatter вашего базового Layout-компонента:
+
+```astro
+---
+// src/layouts/Layout.astro
+import '../styles/global.css';
+---
+<html>
+  <body>
+    <slot />
+  </body>
+</html>
+```
+
+**Способ 2: Директива `is:global`**
+Если вы хотите написать глобальные стили прямо внутри компонента, добавьте к тегу `<style>` директиву `is:global`:
+
+```astro
+<style is:global>
+  /* Эти стили применятся ко всему сайту */
+  body {
+    margin: 0;
+    font-family: sans-serif;
+  }
+  
+  a {
+    text-decoration: none;
+  }
+</style>
+```
+
+## Переменные CSS из JavaScript (`define:vars`)
+
+Одна из самых крутых фич Astro — возможность передавать переменные из Frontmatter (JavaScript/TypeScript) напрямую в CSS с помощью директивы `define:vars`.
+
+Это позволяет легко создавать динамические стили на основе Props!
+
+```astro
+---
+interface Props {
+  textColor: string;
+  size: number;
+}
+const { textColor, size } = Astro.props;
+---
+
+<h2 class="dynamic-heading">Динамический заголовок</h2>
+
+<style define:vars={{ textColor, sizePx: `${size}px` }}>
+  .dynamic-heading {
+    /* Используем переменные, переданные из Frontmatter */
+    color: var(--textColor);
+    font-size: var(--sizePx);
+  }
+</style>
+```
+
+## Использование препроцессоров (Sass)
+
+Astro поддерживает Sass/SCSS и Less прямо из коробки. Вам не нужно возиться с Webpack или сложными конфигурациями Vite!
+
+Всё, что вам нужно сделать, это установить препроцессор:
+```bash
+npm install sass
+```
+
+После этого вы можете использовать атрибут `lang="scss"` в теге `<style>`:
+
+```astro
+<div class="card">
+  <h3>Sass в Astro</h3>
+</div>
+
+<style lang="scss">
+  $primary-color: #ff5e00;
+
+  .card {
+    border: 1px solid #ddd;
+    
+    h3 {
+      color: $primary-color;
+      &:hover {
+        color: darken($primary-color, 10%);
+      }
+    }
+  }
+</style>
+```
+
+## Интеграция с Tailwind CSS
+
+Tailwind CSS — де-факто стандарт стилизации в современной веб-разработке. Astro имеет официальную, нативно поддерживаемую интеграцию с Tailwind.
+
+Чтобы добавить Tailwind в свой проект, достаточно выполнить одну команду в терминале:
+```bash
+npx astro add tailwind
+```
+
+Astro сам установит нужные пакеты, создаст `tailwind.config.mjs` и добавит интеграцию в `astro.config.mjs`. После этого вы можете сразу использовать классы Tailwind в ваших компонентах:
+
+```astro
+<div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+  <div class="p-8">
+    <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+      Astro + Tailwind
+    </div>
+    <p class="mt-2 text-slate-500">
+      Лучшая связка для быстрой разработки!
+    </p>
+  </div>
+</div>
+```
+
+**Важное замечание:** Если вы используете Tailwind, директива `is:global` и локальные теги `<style>` всё еще работают отлично, позволяя комбинировать подходы, когда это необходимо.
+
+---
+Стилизация — это прекрасно, но что насчет интерактивности на клиенте? Как оживить кнопку или сделать слайдер без использования React? Узнаем в следующем уроке: **"Клиентский JavaScript (Скрипты)"**!

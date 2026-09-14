@@ -1,10 +1,10 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import Layout from '../../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 import { type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
-  const snippets = await getCollection('snippets_en');
+  const snippets = await getCollection('snippets_ru');
   return snippets.map((snippet: any) => ({
     params: { slug: snippet.id },
     props: { snippet },
@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 }
 
 type Props = {
-  snippet: CollectionEntry<'snippets_en'>;
+  snippet: CollectionEntry<'snippets_ru'>;
 };
 
 const { snippet } = Astro.props;

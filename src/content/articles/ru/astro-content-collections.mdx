@@ -1,0 +1,122 @@
+---
+title: "Урок 6: Коллекции контента (Content Collections) и валидация Zod в Astro"
+description: "Узнайте, как строго типизировать, валидировать и эффективно управлять Markdown/MDX контентом в вашем проекте, используя Content Collections и Zod."
+date: 2026-09-14
+order: 6
+coverImage:
+  src: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
+  alt: "Coding on a laptop"
+tags:
+  - astro
+  - typescript
+  - zod
+  - markdown
+draft: false
+featured: true
+---
+
+Одна из самых мощных фич Astro — это **Content Collections** (Коллекции Контента). Они позволяют вам организовывать Markdown и MDX документы, гарантировать валидность их структуры (Frontmatter) и использовать строгую типизацию TypeScript во всем проекте.
+
+В этом уроке мы разберем, как они работают, и как библиотека **Zod** помогает нам избегать ошибок.
+
+## Что такое Content Collections?
+
+До появления коллекций разработчики часто использовали `Astro.glob()` для поиска всех `.md` файлов в папке. Это работало, но было несколько проблем:
+1. Вы могли случайно забыть указать обязательное поле (например, `title`).
+2. Опечатки в дате могли сломать сайт во время сборки.
+3. TypeScript не знал, какие именно поля есть в ваших файлах.
+
+С **Content Collections** вы получаете:
+- ✅ **100% Автодополнение (Autocomplete)** во время написания кода.
+- ✅ **Строгую валидацию:** сайт просто не соберется, если вы забыли поле.
+- ✅ **Удобное API:** функции `getCollection` и `render`.
+
+## Шаг 1: Создание структуры папок
+
+Коллекции *обязательно* должны находиться в специальной папке `src/content/` или использовать `glob` лоадеры в новых версиях Astro.
+
+<Alert type="info" title="Astro 5.0+">
+В современных версиях Astro (v5.0 и выше) используется Content Layer API с лоадерами `glob()`.
+</Alert>
+
+## Шаг 2: Определение схемы с Zod
+
+Файл `src/content.config.ts` — это сердце ваших коллекций. Здесь вы описываете, какие поля вы ожидаете увидеть в каждом Markdown-файле. 
+
+Для этого используется [Zod](https://zod.dev/) — популярная библиотека для валидации схем на TypeScript.
+
+```typescript
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+// Описываем схему нашего поста
+const blogSchema = z.object({
+  title: z.string().max(60, "Заголовок слишком длинный!"),
+  description: z.string(),
+  date: z.date(), // Zod автоматически преобразует строку "2024-01-01" в объект Date
+  draft: z.boolean().default(false),
+  tags: z.array(z.string()).optional(),
+  author: z.enum(["John", "Jane"]).default("John"),
+});
+
+// Создаем коллекцию
+const blog = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/blog" }),
+  schema: blogSchema,
+});
+
+export const collections = { blog };
+```
+
+<Alert type="success" title="Магия TypeScript">
+После сохранения этого файла, запустите `astro dev` или `astro sync`. Astro сгенерирует скрытые файлы в `.astro/`, и теперь весь ваш проект будет знать структуру `blogSchema`.
+</Alert>
+
+## Шаг 3: Получение данных в компоненте
+
+Теперь, когда коллекция настроена, получить посты проще простого с помощью функции `getCollection`:
+
+```astro
+---
+import { getCollection } from 'astro:content';
+
+// Получаем только опубликованные посты
+const allPosts = await getCollection('blog', (post) => {
+  return post.data.draft !== true;
+});
+---
+
+<ul>
+  {allPosts.map((post) => (
+    <li>
+      <a href={`/blog/${post.id}`}>{post.data.title}</a>
+      <!-- post.data.title автоматически подсвечивается в вашем IDE! -->
+    </li>
+  ))}
+</ul>
+```
+
+## Шаг 4: Рендеринг контента
+
+Чтобы отобразить само содержимое Markdown или MDX файла, используется функция `render`:
+
+```astro
+---
+import { getCollection, render } from 'astro:content';
+
+const posts = await getCollection('blog');
+const post = posts[0];
+
+// Извлекаем компонент Content и список заголовков
+const { Content, headings } = await render(post);
+---
+
+<h1>{post.data.title}</h1>
+
+<!-- Рендерим контент Markdown/MDX -->
+<Content />
+```
+
+## Итог
+
+Content Collections + Zod — это связка, которая выводит безопасность и удобство разработки сайтов на Astro на уровень корпоративных стандартов (Enterprise), оставаясь при этом невероятно простой в использовании.

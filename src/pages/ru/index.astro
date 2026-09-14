@@ -1,7 +1,7 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -56,7 +56,6 @@ const sortedSnippets = allSnippets.sort(
         </div>
         <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 pb-6">
           {sortedArticles.map((article: any, index: number) => {
-            // Массив разных минимальных высот для эффекта нерегулярности
             const heights = ['min-h-[280px]', 'min-h-[220px]', 'min-h-[320px]', 'min-h-[250px]', 'min-h-[290px]', 'min-h-[240px]'];
             const randomHeight = heights[index % heights.length];
             return (
@@ -135,8 +134,8 @@ const sortedSnippets = allSnippets.sort(
       </div>
     </section>
   </div>
-
 </Layout>
+
 <style>
   .masonry-grid {
     columns: 1;

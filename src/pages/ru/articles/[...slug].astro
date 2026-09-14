@@ -1,12 +1,12 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import Layout from '../../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 import { type CollectionEntry } from 'astro:content';
-import Alert from '../../components/Alert.astro';
-import YouTube from '../../components/YouTube.astro';
+import Alert from '../../../components/Alert.astro';
+import YouTube from '../../../components/YouTube.astro';
 
 export async function getStaticPaths() {
-  const articles = await getCollection('articles_en');
+  const articles = await getCollection('articles_ru');
   return articles.map((article: any) => ({
     params: { slug: article.id },
     props: { article },
@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 }
 
 type Props = {
-  article: CollectionEntry<'articles_en'>;
+  article: CollectionEntry<'articles_ru'>;
 };
 
 const { article } = Astro.props;

@@ -10,6 +10,13 @@ import netlify from '@astrojs/netlify';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://jamstack-base.netlify.app',
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'ru'],
+    routing: {
+      prefixDefaultLocale: false,
+    }
+  },
   adapter: netlify(),
   integrations: [mdx(), sitemap(), robotsTxt(), react(), keystatic()],
 });
