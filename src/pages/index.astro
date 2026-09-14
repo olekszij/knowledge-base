@@ -54,13 +54,13 @@ const sortedSnippets = allSnippets.sort(
             {lang === 'en' ? 'Course Sections' : 'Разделы курса'}
           </h3>
         </div>
-        <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 pb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-6 items-start">
           {sortedArticles.map((article: any, index: number) => {
             // Массив разных минимальных высот для эффекта нерегулярности
             const heights = ['min-h-[280px]', 'min-h-[220px]', 'min-h-[320px]', 'min-h-[250px]', 'min-h-[290px]', 'min-h-[240px]'];
             const randomHeight = heights[index % heights.length];
             return (
-              <a href={`/${lang}/articles/${article.id}/`.replace('//', '/').replace('/en/', '/')} class={`break-inside-avoid mb-6 w-full block group relative bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col ${randomHeight}`}>
+              <a href={`/${lang}/articles/${article.id}/`.replace('//', '/').replace('/en/', '/')} class={`mb-6 w-full block group relative bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col ${randomHeight}`}>
                 {article.data.coverImage?.src && (
                   <div class="w-full h-40 overflow-hidden border-b border-gray-200/50 dark:border-gray-700/50 shrink-0">
                     <img 
